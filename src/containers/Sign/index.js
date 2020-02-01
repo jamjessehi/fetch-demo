@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import request, { paramStringify, urlWithParam } from "utils/request";
+import request, { paramStringify } from "utils/request";
 import { useHistory } from "react-router-dom";
 
 export default () => {
@@ -16,13 +16,14 @@ export default () => {
   function submit(e) {
     e.preventDefault();
 
-    const params = {
-      hi: "dsds",
-      dfd: 2,
-      name: "fdfd"
-    };
+    if (submitting) return;
 
-    const url = urlWithParam("/sign", params);
+    if (password !== confirmPassword) {
+      alert("please confirm password!");
+      return;
+    }
+
+    const url = "/sign";
 
     const data = {
       username,
@@ -31,18 +32,18 @@ export default () => {
 
     const options = {
       method: "POST",
-      mode: "no-cors",
       body: paramStringify(data)
     };
 
-    request(url, options);
+    setSubmitting(true);
 
-    if (submitting) return;
-
-    if (password !== confirmPassword) {
-      alert("please confirm password!");
-      return;
-    }
+    request(url, options)
+      .then(res => {
+        history.push("user");
+      })
+      .catch(() => {
+        setSubmitting(false);
+      });
   }
 
   return (

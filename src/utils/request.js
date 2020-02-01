@@ -10,16 +10,19 @@ export const urlWithParam = (url, params) => {
   return `${url}?${paramStringify(params)}`;
 };
 
-export default (url, options = {}) => {
-  const base = process.env.REACT_APP_BASE_URL;
+const BASE = process.env.REACT_APP_BASE_URL;
 
-  const u = new URL(url, base);
+export default (url, options = {}) => {
+  const u = new URL(url, BASE);
 
   const defaultOptions = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
-    }
+    },
+    credentials: "include"
   };
 
-  return fetch(u.href, { ...defaultOptions, ...options });
+  return fetch(u.href, { ...defaultOptions, ...options }).then(response =>
+    response.json()
+  );
 };
