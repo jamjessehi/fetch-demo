@@ -7,27 +7,19 @@ export default () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
-
-  const [error, setError] = useState(false);
 
   function submit(e) {
     e.preventDefault();
 
     if (submitting) return;
 
-    if (password !== confirmPassword) {
-      alert("please confirm password!");
-      return;
-    }
-
-    const url = "/sign";
+    const url = "/login";
 
     const data = {
-      username,
-      password
+      username: username.trim(),
+      password: password.trim()
     };
 
     const options = {
@@ -38,17 +30,17 @@ export default () => {
     setSubmitting(true);
 
     request(url, options)
-      .then(res => {
+      .then(() => {
         history.push("/user");
       })
-      .catch(() => {
+      .catch(e => {
+        console.log(e.response);
         setSubmitting(false);
       });
   }
 
   return (
     <form>
-      <div style={{ color: "red", fontWeight: "bold" }}>{error}</div>
       <input
         placeholder="username"
         value={username}
@@ -63,14 +55,8 @@ export default () => {
       />
       <br />
       <br />
-      <input
-        placeholder="confirm password"
-        value={confirmPassword}
-        onChange={e => setConfirmPassword(e.target.value)}
-      />
-      <br />
-      <br />
-      <button onClick={submit}>{submitting ? "waiting" : "sign in"}</button>
+
+      <button onClick={submit}>{submitting ? "waiting" : "login"}</button>
     </form>
   );
 };

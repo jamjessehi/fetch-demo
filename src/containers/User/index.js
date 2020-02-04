@@ -6,9 +6,13 @@ export default () => {
 
   useEffect(() => {
     const url = "/user";
-    request(url).then(res => {
-      setUser(res);
-    });
+    request(url)
+      .then(res => {
+        setUser(res);
+      })
+      .catch(e => {
+        console.log(e.response);
+      });
   }, []);
 
   return <div>I am {user.username}</div>;

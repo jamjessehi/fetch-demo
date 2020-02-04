@@ -1,3 +1,16 @@
+import { OK } from "constants/HttpStatus";
+
+const checkStatus = response => {
+  if (response.status === OK) {
+    return response;
+  }
+  const error = new Error(response.statusText);
+  error.response = response;
+  throw error;
+};
+
+const parseJSON = response => response.json();
+
 export const paramStringify = params => {
   const searchParams = new URLSearchParams();
 
@@ -22,7 +35,7 @@ export default (url, options = {}) => {
     credentials: "include"
   };
 
-  return fetch(u.href, { ...defaultOptions, ...options }).then(response =>
-    response.json()
-  );
+  return fetch(u.href, { ...defaultOptions, ...options })
+    .then(checkStatus)
+    .then(parseJSON);
 };
